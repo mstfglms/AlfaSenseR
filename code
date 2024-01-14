@@ -1,0 +1,122 @@
+#define PIN_OP A0
+#define PIN_FP A2
+#define PIN_MAP A4
+#define PIN_P4 A6
+
+#define PIN_OT A1
+#define PIN_ECT A3
+#define PIN_RIT A5
+#define PIN_ROT A7
+#define PIN_CHT A9
+#define PIN_IAT A11
+#define PIN_T7 A13
+#define PIN_T8 A15
+
+// Kullanıcı tarafından belirlenecek Steinhart-Hart katsayıları
+float sensor_types[3][3]; // 3 sensör tipi, her biri için 3 katsayı
+
+void setup() {
+  Serial.begin(9600);
+
+  // Kullanıcı tarafından belirlenen katsayıları ayarla
+  setSensorTypeCoefficients(0, 1.304628145e-3, 2.579888427e-4, 1.794777602e-7); // M12_NTC
+  setSensorTypeCoefficients(1, 1.511129458e-3, 2.497079116e-4, -0.03967365606e-7); // NPT_NTC
+  setSensorTypeCoefficients(2, 2.477214212e-3, -0.312425541e-4, 18.52358449e-7); // M10_NTC
+}
+
+void loop() {
+  // İlk sensör grubu (basınç sensörleri)
+  float op_voltage = readVoltage(PIN_OP);
+  float fp_voltage = readVoltage(PIN_FP);
+  float map_voltage = readVoltage(PIN_MAP);
+  float p4_voltage = readVoltage(PIN_P4);
+
+  // Seri monitöre voltaj değerlerini yazdır
+  Serial.print("OP Voltage: ");
+  Serial.print(op_voltage, 2);
+  Serial.print(" V, FP Voltage: ");
+  Serial.print(fp_voltage, 2);
+  Serial.print(" V, MAP Voltage: ");
+  Serial.print(map_voltage, 2);
+  Serial.print(" V, P4 Voltage: ");
+  Serial.print(p4_voltage, 2);
+  Serial.println(" V");
+
+  // Basınç değerini voltajdan hesapla (örnek formül)
+  float op_pressure = 2.50 * (op_voltage - 0.5); // 10bar
+  float fp_pressure = 1.25 * (fp_voltage - 0.5); // 5 bar
+  float map_pressure = 1.25 * (map_voltage - 0.5); // 5 bar
+  float p4_pressure = 2.50 * (p4_voltage - 0.5); // 10bar
+
+  // Seri monitöre basınç değerlerini yazdır
+  Serial.print("OP Pressure: ");
+  Serial.print(op_pressure, 2);
+  Serial.print(" bar, FP Pressure: ");
+  Serial.print(fp_pressure, 2);
+  Serial.print(" bar, MAP Pressure: ");
+  Serial.print(map_pressure, 2);
+  Serial.print(" bar, P4 Pressure: ");
+  Serial.print(p4_pressure, 2);
+  Serial.println(" bar");
+
+  // İkinci sensör grubu (sıcaklık sensörleri)
+  float ot_temperature = readTemperature(PIN_OT, 1); // NPT_NTC
+  float ect_temperature = readTemperature(PIN_ECT, 0); // M12_NTC
+  float rit_temperature = readTemperature(PIN_RIT, 0); // M12_NTC
+  float rot_temperature = readTemperature(PIN_ROT, 0); // M12_NTC
+  float cht_temperature = readTemperature(PIN_CHT, 2); // M10_NTC
+  float iat_temperature = readTemperature(PIN_IAT, 0); // M12_NTC
+  float t7_temperature = readTemperature(PIN_T7, 0);   // M12_NTC
+  float t8_temperature = readTemperature(PIN_T8, 0);   // M12_NTC
+
+  // Seri monitöre sıcaklık değerlerini yazdır
+  Serial.print("OT: ");
+  Serial.print(ot_temperature, 2);
+  Serial.print(" C, ECT: ");
+  Serial.print(ect_temperature, 2);
+  Serial.print(" C, RIT: ");
+  Serial.print(rit_temperature, 2);
+  Serial.print(" C, ROT: ");
+  Serial.print(rot_temperature, 2);
+  Serial.print(" C, CHT: ");
+  Serial.print(cht_temperature, 2);
+  Serial.print(" C, IAT: ");
+  Serial.print(iat_temperature, 2);
+  Serial.print(" C, T7: ");
+  Serial.print(t7_temperature, 2);
+  Serial.print(" C, T8: ");
+  Serial.print(t8_temperature, 2);
+  Serial.println(" C");
+
+  delay(1000); // İsteğe bağlı: okuma sıklığını ayarlamak için
+}
+
+float readVoltage(int pin) {
+  int sensorValue = analogRead(pin);
+  float voltage = sensorValue * (5.0 / 1023.0);
+  return voltage;
+}
+
+float readTemperature(int pin, int sensorTypeIndex) {
+  float A = sensor_types[sensorTypeIndex][0];
+  float B = sensor_types[sensorTypeIndex][1];
+  float C = sensor_types[sensorTypeIndex][2];
+
+  int sensorValue = analogRead(pin);
+  float voltage = sensorValue * (5.0 / 1023.0);
+  float resistance = (1000 * voltage) / (5.0 - voltage);
+  float temperature = calculateTemperature(resistance, A, B, C);
+  return temperature;
+}
+
+void setSensorTypeCoefficients(int index, float A, float B, float C) {
+  sensor_types[index][0] = A;
+  sensor_types[index][1] = B;
+  sensor_types[index][2] = C;
+}
+
+float calculateTemperature(float resistance, float A, float B, float C) {
+  float inv_Temp = A + B * log(resistance) + C * pow(log(resistance), 3.0); // Steinhart-Hart denklemi
+  float temperature = 1.0 / inv_Temp - 273.15; // Kelvin'i Celsius'a çevir
+  return temperature;
+}
