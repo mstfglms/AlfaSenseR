@@ -93,6 +93,7 @@ void loop() {
 
 float readVoltage(int pin) {
   int sensorValue = analogRead(pin);
+  
   float voltage = sensorValue * (5.0 / 1023.0);
   return voltage;
 }
@@ -104,7 +105,8 @@ float readTemperature(int pin, int sensorTypeIndex) {
 
   int sensorValue = analogRead(pin);
   float voltage = sensorValue * (5.0 / 1023.0);
-  float resistance = (1000 * voltage) / (5.0 - voltage);
+  float buffer =(5/voltage) - 1.0;
+  float resistance = (1000 * buffer);
   float temperature = calculateTemperature(resistance, A, B, C);
   return temperature;
 }
