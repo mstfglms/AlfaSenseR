@@ -24,7 +24,7 @@ DHT dht(DHTPIN, DHTTYPE);
 #define PIN_T8 A15
 
 #define VOLTAGE_PIN A8 // Gerilim bölücüsünün bağlı olduğu pin
-#define VOLTAGE_DIVIDER_RATIO 3.075 // Gerilim bölücü oranı (R2 / (R1 + R2))
+#define VOLTAGE_DIVIDER_RATIO 3.0715 // Gerilim bölücü oranı (R2 / (R1 + R2))
 
 // Kullanıcı tarafından belirlenecek Steinhart-Hart katsayıları
 float sensor_types[3][3]; // 3 sensör tipi, her biri için 3 katsayı
@@ -45,24 +45,15 @@ void loop() {
   float map_voltage = readVoltage(PIN_MAP);
   float p4_voltage = readVoltage(PIN_P4);
 
-  /* Seri monitöre voltaj değerlerini yazdır
-  Serial.print("OP Voltage: ");
-  Serial.print(op_voltage, 2);
-  Serial.print(" V, FP Voltage: ");
-  Serial.print(fp_voltage, 2);
-  Serial.print(" V, MAP Voltage: ");
-  Serial.print(map_voltage, 2);
-  Serial.print(" V, P4 Voltage: ");
-  Serial.print(p4_voltage, 2);
-  Serial.println(" V");
-*/
-  // Basınç değerini voltajdan hesapla (örnek formül)
+  // Basınç değerini voltajdan hesapla
   float op_pressure = 2.50 * (op_voltage - 0.5); // 10bar
   float fp_pressure = 1.25 * (fp_voltage - 0.5); // 5 bar
   float map_pressure = 1.25 * (map_voltage - 0.5); // 5 bar
   float p4_pressure = 2.50 * (p4_voltage - 0.5); // 10bar
 
-  // Seri monitöre basınç değerlerini yazdır
+  
+/* 
+  Seri monitöre basınç değerlerini yazdır
   Serial.print("OP Pressure: ");
   Serial.print(op_pressure, 2);
   Serial.print(" bar, FP Pressure: ");
@@ -72,6 +63,7 @@ void loop() {
   Serial.print(" bar, P4 Pressure: ");
   Serial.print(p4_pressure, 2);
   Serial.println(" bar");
+*/
 
   // İkinci sensör grubu (sıcaklık sensörleri)
   float ot_temperature = readTemperature(PIN_OT, 1); // NPT_NTC
@@ -86,8 +78,21 @@ void loop() {
   float dht_temperature = dht.readTemperature();
   float dht_humidity = dht.readHumidity();
   float voltage_measurement = readVoltage(VOLTAGE_PIN) * VOLTAGE_DIVIDER_RATIO;  // Gerilim bölücüsünden gerilim ölçümü
-
-  // Seri monitöre sıcaklık değerlerini yazdır
+  
+  /*
+ /if (ot_temperature < -30) ot_temperature = 0;
+  if (ect_temperature < -30) ect_temperature = 0;
+  if (rit_temperature < -30) rit_temperature = 0;
+  if (rot_temperature < -30) rot_temperature = 0;
+  if (cht_temperature < -30) cht_temperature = 0;
+  if (iat_temperature < -30) iat_temperature = 0;
+  if (t7_temperature < -30) t7_temperature = 0;
+  if (t8_temperature < -30) t8_temperature = 0;
+  if (egt_temperature < -30) egt_temperature = 0;
+  if (dht_temperature < -30) dht_temperature = 0;
+  
+/* 
+  Seri monitöre sıcaklık değerlerini yazdır
   Serial.print("OT: ");
   Serial.print(ot_temperature, 2);
   Serial.print(" C, ECT: ");
@@ -113,11 +118,106 @@ void loop() {
   Serial.print(" C, Hum: ");
   Serial.print(dht_humidity, 2);
   Serial.println(" %");
+*/
+  //OIL PRESSURE
+  Serial.print("n0.val=");
+  Serial.print(op_pressure*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //OIL TEMPERATURE
+  Serial.print("n1.val=");
+  Serial.print(ot_temperature*10,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //ENGINE COOLANT TEMPERATURE
+  Serial.print("n2.val=");
+  Serial.print(ect_temperature*10,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //RADIATOR OUTLET TEMPERATURE
+  Serial.print("n3.val=");
+  Serial.print(rot_temperature*10,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //CYLNDER HEAD TEMPERATURE
+  Serial.print("n4.val=");
+  Serial.print(cht_temperature*10,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //FUEL PRESSURE
+  Serial.print("n5.val=");
+  Serial.print(fp_pressure*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //VOLTAGE
+  Serial.print("n6.val=");
+  Serial.print(voltage_measurement*10,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //EXHAUST GAS TEMPERATURE
+  Serial.print("n7.val=");
+  Serial.print(egt_temperature*10,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //OUTSIDE TEMPERATURE
+  Serial.print("n8.val=");
+  Serial.print(dht_temperature*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //HUMIDITY
+  Serial.print("n9.val=");
+  Serial.print(dht_humidity*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //MAP
+  Serial.print("n10.val=");
+  Serial.print(map_pressure*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //P4
+  Serial.print("n11.val=");
+  Serial.print(p4_pressure*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //RADIATOR INLET TEMPERATURE
+  Serial.print("n12.val=");
+  Serial.print(rit_temperature*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //INTAKE AIR TEMPERATURE
+  Serial.print("n13.val=");
+  Serial.print(iat_temperature*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //T7 TEMPERATURE
+  Serial.print("n14.val=");
+  Serial.print(t7_temperature*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  //T8
+  Serial.print("n15.val=");
+  Serial.print(t8_temperature*100,0);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  Serial.write(0xff);
+  
 
-
-
-
-  delay(1000); // İsteğe bağlı: okuma sıklığını ayarlamak için
+  delay(250); // İsteğe bağlı: okuma sıklığını ayarlamak için
 }
 
 float readVoltage(int pin) {
@@ -134,7 +234,13 @@ float readTemperature(int pin, int sensorTypeIndex) {
 
   int sensorValue = analogRead(pin);
   float voltage = sensorValue * (5.0 / 1023.0);
-  float buffer =(5/voltage) - 1.0;
+
+  // Sensör çıkarıldığında geç güncelleme kontrolü
+  if (voltage < 0.1) {
+    return 0.0;  // Sıcaklık -30 derecenin altındaysa, sıfır döndür
+  }
+
+  float buffer = (5 / voltage) - 1.0;
   float resistance = (1000 * buffer);
   float temperature = calculateTemperature(resistance, A, B, C);
   return temperature;
