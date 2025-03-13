@@ -23,16 +23,15 @@ DHT dht(DHTPIN, DHTTYPE);
 #define PIN_T7 A13
 #define PIN_T8 A15
 
-#define VOLTAGE_PIN A8 // Gerilim bölücüsünün bağlı olduğu pin
-#define VOLTAGE_DIVIDER_RATIO 3.0715 // Gerilim bölücü oranı (R2 / (R1 + R2))
+#define VOLTAGE_PIN A8
+#define VOLTAGE_DIVIDER_RATIO 3.0715 // (R2 / (R1 + R2))
 
-// Kullanıcı tarafından belirlenecek Steinhart-Hart katsayıları
-float sensor_types[4][3]; // 3 sensör tipi, her biri için 3 katsayı
-String coolant_level; // Soğutucu seviyesini temsil edecek değişken
+// Steinhart-Hart coefficients to be set by the user
+float sensor_types[4][3]; // 3 sensor types, each with 3 coefficients
+String coolant_level;
 void setup() {
   Serial.begin(9600);
   dht.begin();
-  // Kullanıcı tarafından belirlenen katsayıları ayarla
   setSensorTypeCoefficients(0, 1.304628145e-3, 2.579888427e-4, 1.794777602e-7); // M12_NTC
   setSensorTypeCoefficients(1, 1.511129458e-3, 2.497079116e-4, -0.03967365606e-7); // NPT_NTC
   setSensorTypeCoefficients(2, 0.3293062200e-3, 4.042042390e-4, -6.802609499e-7); // M10_NTC
@@ -40,13 +39,11 @@ void setup() {
 }
 
 void loop() {
-  // İlk sensör grubu (basınç sensörleri)
   float op_voltage = readVoltage(PIN_OP);
   float fp_voltage = readVoltage(PIN_FP);
   float map_voltage = readVoltage(PIN_MAP);
   float coolant_voltage = readVoltage(PIN_P4);
 
-  // Basınç değerini voltajdan hesapla
   float op_pressure = 2.50 * (op_voltage - 0.5); // 10bar
   float fp_pressure = 1.25 * (fp_voltage - 0.5); // 5 bar
   float map_pressure = 1.25 * (map_voltage - 0.5); // 5 bar
@@ -60,7 +57,6 @@ void loop() {
 
   
 /* 
-  Seri monitöre basınç değerlerini yazdır
   Serial.print("OP Pressure: ");
   Serial.print(op_pressure, 2);
   Serial.print(" bar, FP Pressure: ");
@@ -72,7 +68,6 @@ void loop() {
   Serial.println(" bar");
 */
 
-  // İkinci sensör grubu (sıcaklık sensörleri)
   float ot_temperature = readTemperature(PIN_OT, 1); // NPT_NTC
   float ect_temperature = readTemperature(PIN_ECT, 0); // M12_NTC
   float rit_temperature = readTemperature(PIN_RIT, 0); // M12_NTC
@@ -84,7 +79,7 @@ void loop() {
   float egt_temperature = thermocouple.readCelsius();
   float dht_temperature = dht.readTemperature();
   float dht_humidity = dht.readHumidity();
-  float voltage_measurement = readVoltage(VOLTAGE_PIN) * VOLTAGE_DIVIDER_RATIO;  // Gerilim bölücüsünden gerilim ölçümü
+  float voltage_measurement = readVoltage(VOLTAGE_PIN) * VOLTAGE_DIVIDER_RATIO;
   
   /*
  /if (ot_temperature < -30) ot_temperature = 0;
@@ -99,7 +94,6 @@ void loop() {
   if (dht_temperature < -30) dht_temperature = 0;
   
 /* 
-  Seri monitöre sıcaklık değerlerini yazdır
   Serial.print("OT: ");
   Serial.print(ot_temperature, 2);
   Serial.print(" C, ECT: ");
@@ -126,48 +120,56 @@ void loop() {
   Serial.print(dht_humidity, 2);
   Serial.println(" %");
 */
+
   //OIL TEMPERATURE
   Serial.print("n1.val=");
   Serial.print(ot_temperature*10,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //OIL PRESSURE
   Serial.print("n2.val=");
   Serial.print(op_pressure*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //RADIATOR INLET TEMPERATURE
   Serial.print("n3.val=");
   Serial.print(rit_temperature*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //RADIATOR OUTLET TEMPERATURE
   Serial.print("n4.val=");
   Serial.print(rot_temperature*10,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //ENGINE COOLANT TEMPERATURE
   Serial.print("n5.val=");
   Serial.print(ect_temperature*10,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //CYLNDER HEAD TEMPERATURE
   Serial.print("n6.val=");
   Serial.print(cht_temperature*10,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //FUEL PRESSURE
   Serial.print("n7.val=");
   Serial.print(fp_pressure*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //P4
   Serial.print("t8.txt=\"");
   Serial.print(String(coolant_level));
@@ -175,48 +177,56 @@ void loop() {
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //VOLTAGE
   Serial.print("n9.val=");
   Serial.print(voltage_measurement*10,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //EXHAUST GAS TEMPERATURE
   Serial.print("n10.val=");
   Serial.print(egt_temperature*10,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //OUTSIDE TEMPERATURE
   Serial.print("n11.val=");
   Serial.print(dht_temperature*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //HUMIDITY
   Serial.print("n12.val=");
   Serial.print(dht_humidity*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //MAP
   Serial.print("n13.val=");
   Serial.print(map_pressure*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //INTAKE AIR TEMPERATURE
   Serial.print("n14.val=");
   Serial.print(iat_temperature*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //T7 TEMPERATURE
   Serial.print("n15.val=");
   Serial.print(t7_temperature*100,0);
   Serial.write(0xff);
   Serial.write(0xff);
   Serial.write(0xff);
+
   //SCU TEMPERATURE
   Serial.print("n16.val=");
   Serial.print(t8_temperature*100,0);
@@ -225,7 +235,7 @@ void loop() {
   Serial.write(0xff);
   
 
-  delay(250); // İsteğe bağlı: okuma sıklığını ayarlamak için
+  delay(250);
 }
 
 float readVoltage(int pin) {
@@ -243,9 +253,8 @@ float readTemperature(int pin, int sensorTypeIndex) {
   int sensorValue = analogRead(pin);
   float voltage = sensorValue * (5.0 / 1023.0);
 
-  // Sensör çıkarıldığında geç güncelleme kontrolü
   if (voltage < 0.1) {
-    return 0.0;  // Sıcaklık -30 derecenin altındaysa, sıfır döndür
+    return 0.0;  // Return zero if temperature is below -30 degrees
   }
 
   float buffer = (5 / voltage) - 1.0;
@@ -261,7 +270,7 @@ void setSensorTypeCoefficients(int index, float A, float B, float C) {
 }
 
 float calculateTemperature(float resistance, float A, float B, float C) {
-  float inv_Temp = A + B * log(resistance) + C * pow(log(resistance), 3.0); // Steinhart-Hart denklemi
-  float temperature = 1.0 / inv_Temp - 273.15; // Kelvin'i Celsius'a çevir
+  float inv_Temp = A + B * log(resistance) + C * pow(log(resistance), 3.0); // Steinhart-Hart
+  float temperature = 1.0 / inv_Temp - 273.15; // Kelvin to Celsius
   return temperature;
 }
