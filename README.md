@@ -1,189 +1,93 @@
-About the Project
-This project aims to collect data from various sensors (temperature, pressure, humidity, voltage, etc.) in a vehicle and display this data on a screen. The project is developed on the Arduino platform and uses the MAX6675 thermocouple module, DHT22 temperature and humidity sensor, NTC thermistors, and various pressure sensors. The collected data can be displayed on an in-car screen or serial monitor.
+AlfaSenseR
 
-Sensors and Components Used
-MAX6675: Thermocouple module for measuring exhaust gas temperature.
+Overview
 
-DHT22: Sensor for measuring ambient temperature and humidity.
+This project is a sensor data logger that reads and processes various analog sensor inputs, calculates values such as pressure and temperature, and sends the processed data to a serial output. It is designed to work with multiple types of NTC temperature sensors and pressure sensors.
 
-NTC Thermistors: Sensors for measuring engine temperature, radiator inlet/outlet temperature, etc.
+Features
 
-Pressure Sensors: Sensors for measuring oil pressure, fuel pressure, and manifold absolute pressure (MAP).
+Reads multiple sensor inputs including pressure, temperature, and voltage.
 
-Voltage Divider: Circuit for measuring vehicle battery voltage.
+Uses Steinhart-Hart equations for accurate temperature calculation.
 
-Technologies Used
-Microcontroller: Arduino (Uno, Nano, or similar)
+Outputs processed data via serial communication.
 
-Software: Arduino IDE, C++
+Displays coolant level status based on sensor readings.
 
-Libraries: MAX6675, DHT
+Hardware Requirements
 
-Installation
-Clone this repository to your computer:
+Microcontroller (e.g., Arduino Mega 2560 mini)
 
-bash
-Copy
-git clone https://github.com/your-username/project-repo.git  
-Open Arduino IDE and load the project.ino file.
+Analog sensors:
 
-Install the necessary libraries:
+Pressure sensors (oil pressure, fuel pressure, MAP sensor, coolant pressure sensor)
 
-MAX6675 library
+Temperature sensors (various NTC sensors: M12, NPT, M10, 1K)
 
-DHT library
+Voltage divider circuit for battery voltage measurement
 
-Connect the sensors and display to the circuit. Refer to the schematics folder for connection diagrams.
 
-Connect your Arduino to your computer and upload the code.
+Software Details
 
-Usage
-Once the code is uploaded, data from the sensors will be automatically displayed on the screen. You can also monitor the data via the serial monitor.
+Pin Configuration
 
-Connection Diagrams
-The connection diagrams for the sensors used in the project are as follows:
+#define PIN_OP A0  // Oil Pressure
+#define PIN_FP A2  // Fuel Pressure
+#define PIN_MAP A4 // Manifold Absolute Pressure
+#define PIN_P4 A6  // Coolant Pressure
 
-MAX6675:
+#define PIN_OT A1  // Oil Temperature
+#define PIN_ECT A3 // Engine Coolant Temperature
+#define PIN_RIT A5 // Radiator Inlet Temperature
+#define PIN_ROT A7 // Radiator Outlet Temperature
+#define PIN_CHT A9 // Cylinder Head Temperature
+#define PIN_IAT A11 // Intake Air Temperature
+#define PIN_T7 A13 // T7 Temperature Sensor
+#define PIN_T8 A15 // SCU Temperature Sensor
+#define VOLTAGE_PIN A8 // Battery Voltage Measurement
 
-CLK -> Pin 44
+Temperature Calculation
 
-CS -> Pin 47
+The temperature sensors use the Steinhart-Hart equation:
 
-DO -> Pin 46
+float inv_Temp = A + B * log(resistance) + C * pow(log(resistance), 3.0);
+float temperature = 1.0 / inv_Temp - 273.15;
 
-DHT22:
+Where A, B, and C are predefined coefficients for different sensor types.
 
-Data -> Pin 3
+Coolant Level Detection
 
-NTC Thermistors:
+The coolant level is determined based on the voltage range:
 
-OT -> A1
+if (coolant_voltage < 1.0) {
+    coolant_level = "NOK";
+} else if (coolant_voltage > 4.0) {
+    coolant_level = "OK";
+} else {
+    coolant_level = "ERR";
+}
 
-ECT -> A3
+Installation & Usage
 
-RIT -> A5
+Connect the sensors to the appropriate analog pins.
 
-ROT -> A7
+Upload the code to the microcontroller.
 
-CHT -> A9
+Open the serial monitor to view the sensor data output.
 
-IAT -> A11
+Future Enhancements
 
-T7 -> A13
+Can-BUS capability
 
-T8 -> A15
+Data logging to an SD card.
 
-Pressure Sensors:
-
-OP -> A0
-
-FP -> A2
-
-MAP -> A4
-
-P4 -> A6
-
-Voltage Divider:
-
-VOLTAGE_PIN -> A8
-
-Contributing
-If you would like to contribute to this project, please open an issue or submit a pull request.
+Wireless communication for remote monitoring.
 
 License
-This project is licensed under the MIT License. See the LICENSE file for more details.
 
-Proje Hakkında
-Bu proje, bir araçta kullanılan çeşitli sensörlerden (sıcaklık, basınç, nem, voltaj vb.) veri toplayarak bu verileri bir ekranda görüntülemeyi amaçlamaktadır. Proje, Arduino platformu üzerinde geliştirilmiştir ve MAX6675 termokupl modülü, DHT22 sıcaklık ve nem sensörü, NTC termistörler ve çeşitli basınç sensörleri kullanılmıştır. Toplanan veriler, araç içindeki bir ekrana veya seri monitöre aktarılabilir.
+MIT License
 
-Kullanılan Sensörler ve Bileşenler
-MAX6675: Egzoz gazı sıcaklığını ölçmek için kullanılan termokupl modülü.
+Author
 
-DHT22: Ortam sıcaklığı ve nemini ölçen sensör.
+Mustafa GULMUS
 
-NTC Termistörler: Motor sıcaklığı, radyatör giriş/çıkış sıcaklığı vb. ölçümler için kullanılan sensörler.
-
-Basınç Sensörleri: Yağ basıncı, yakıt basıncı ve manifold mutlak basıncı (MAP) ölçümleri için kullanılan sensörler.
-
-Voltaj Bölücü: Araç bataryası voltajını ölçmek için kullanılan devre.
-
-Kullanılan Teknolojiler
-Mikrodenetleyici: Arduino (Uno, Nano veya benzeri)
-
-Yazılım: Arduino IDE, C++
-
-Kütüphaneler: MAX6675, DHT
-
-Kurulum
-Bu depoyu bilgisayarınıza klonlayın:
-
-bash
-Copy
-git clone https://github.com/kullanici-adiniz/proje-repo.git  
-Arduino IDE'yi açın ve proje.ino dosyasını yükleyin.
-
-Gerekli kütüphaneleri yükleyin:
-
-MAX6675 kütüphanesi
-
-DHT kütüphanesi
-
-Sensörleri ve ekranı devreye bağlayın. Bağlantı şemaları için schematics klasörüne bakın.
-
-Arduino'yu bilgisayarınıza bağlayın ve kodu yükleyin.
-
-Kullanım
-Kod yüklendikten sonra, sensörlerden gelen veriler otomatik olarak ekranda görüntülenecektir. Seri monitör üzerinden de verileri gözlemleyebilirsiniz.
-
-Bağlantı Şemaları
-Projede kullanılan sensörlerin bağlantı şemaları aşağıdaki gibidir:
-
-MAX6675:
-
-CLK -> Pin 44
-
-CS -> Pin 47
-
-DO -> Pin 46
-
-DHT22:
-
-Data -> Pin 3
-
-NTC Termistörler:
-
-OT -> A1
-
-ECT -> A3
-
-RIT -> A5
-
-ROT -> A7
-
-CHT -> A9
-
-IAT -> A11
-
-T7 -> A13
-
-T8 -> A15
-
-Basınç Sensörleri:
-
-OP -> A0
-
-FP -> A2
-
-MAP -> A4
-
-P4 -> A6
-
-Voltaj Bölücü:
-
-VOLTAGE_PIN -> A8
-
-Katkıda Bulunma
-Eğer bu projeye katkıda bulunmak isterseniz, lütfen bir "issue" açın veya bir "pull request" gönderin.
-
-Lisans
-Bu proje MIT Lisansı altında lisanslanmıştır. Daha fazla bilgi için LICENSE dosyasına bakın.
