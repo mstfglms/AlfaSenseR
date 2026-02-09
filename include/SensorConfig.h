@@ -18,11 +18,6 @@ constexpr uint8_t T7 = A13;
 constexpr uint8_t T8 = A15;
 
 constexpr uint8_t BATTERY_VOLTAGE = A8;
-constexpr uint8_t DHT_PIN = 3;
-
-constexpr uint8_t THERMO_DO = 46;
-constexpr uint8_t THERMO_CS = 47;
-constexpr uint8_t THERMO_CLK = 44;
 }  // namespace pins
 
 constexpr float VOLTAGE_DIVIDER_RATIO = 3.0715F;

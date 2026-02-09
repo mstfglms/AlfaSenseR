@@ -11,9 +11,6 @@ struct DashboardValues {
   float chtTemperature;
   float fpPressure;
   float batteryVoltage;
-  float egtTemperature;
-  float dhtTemperature;
-  float dhtHumidity;
   float mapPressure;
   float iatTemperature;
   float t7Temperature;

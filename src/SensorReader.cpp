@@ -15,7 +15,7 @@ String detectCoolantLevel(float coolantVoltage) {
 }
 }  // namespace
 
-SensorSnapshot readSensorSnapshot(DHT& dht, MAX6675& thermocouple) {
+SensorSnapshot readSensorSnapshot() {
   const float opVoltage = readVoltage(pins::OP);
   const float fpVoltage = readVoltage(pins::FP);
   const float mapVoltage = readVoltage(pins::MAP);
@@ -35,9 +35,6 @@ SensorSnapshot readSensorSnapshot(DHT& dht, MAX6675& thermocouple) {
           readTemperature(pins::CHT, M10_NTC),
           fpPressure,
           readVoltage(pins::BATTERY_VOLTAGE) * VOLTAGE_DIVIDER_RATIO,
-          thermocouple.readCelsius(),
-          dht.readTemperature(),
-          dht.readHumidity(),
           mapPressure,
           readTemperature(pins::IAT, M12_NTC),
           readTemperature(pins::T7, M12_NTC),

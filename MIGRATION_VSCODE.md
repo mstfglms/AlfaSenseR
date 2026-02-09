@@ -20,3 +20,7 @@ Bu proje Arduino IDE tek dosya yaklaşımından PlatformIO yapısına taşındı
 
 ## Not
 Bu ortamda `pio` CLI kurulu değilse terminalden derleme yapılamaz; VS Code içindeki PlatformIO arayüzüyle çalışabilirsiniz.
+
+## Donanım sadeleştirme notu
+- Otomotiv uygunluğu nedeniyle `MAX6675` (EGT) ve `DHT` (sıcaklık/nem) okumaları projeden çıkarıldı.
+- Bu sensörlerin kod bağımlılıkları da kaldırıldı; ileride uygun otomotiv donanımı seçildiğinde sade bir modülle yeniden eklenebilir.
