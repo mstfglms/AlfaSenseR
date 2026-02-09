@@ -1,5 +1,19 @@
 #include "NextionOutput.h"
 
+namespace {
+struct NextionNumericUpdate {
+  const __FlashStringHelper* key;
+  float value;
+  float multiplier;
+};
+
+void sendDashboardUpdates(const NextionNumericUpdate* updates, size_t count) {
+  for (size_t i = 0; i < count; ++i) {
+    sendNextionNumber(updates[i].key, updates[i].value, updates[i].multiplier);
+  }
+}
+}  // namespace
+
 void sendNextionNumber(const __FlashStringHelper* key, float value, float multiplier) {
   Serial.print(key);
   Serial.print(value * multiplier, 0);
@@ -16,4 +30,20 @@ void sendNextionText(const __FlashStringHelper* key, const String& value) {
   Serial.write(0xFF);
   Serial.write(0xFF);
   Serial.write(0xFF);
+}
+
+void sendDashboardValues(const DashboardValues& values) {
+  const NextionNumericUpdate updates[] = {
+      {F("n1.val="), values.otTemperature, 10.0F},   {F("n2.val="), values.opPressure, 100.0F},
+      {F("n3.val="), values.ritTemperature, 100.0F}, {F("n4.val="), values.rotTemperature, 10.0F},
+      {F("n5.val="), values.ectTemperature, 10.0F},  {F("n6.val="), values.chtTemperature, 10.0F},
+      {F("n7.val="), values.fpPressure, 100.0F},     {F("n9.val="), values.batteryVoltage, 10.0F},
+      {F("n10.val="), values.egtTemperature, 10.0F}, {F("n11.val="), values.dhtTemperature, 100.0F},
+      {F("n12.val="), values.dhtHumidity, 100.0F},   {F("n13.val="), values.mapPressure, 100.0F},
+      {F("n14.val="), values.iatTemperature, 100.0F},
+      {F("n15.val="), values.t7Temperature, 100.0F},
+      {F("n16.val="), values.t8Temperature, 100.0F},
+  };
+
+  sendDashboardUpdates(updates, sizeof(updates) / sizeof(updates[0]));
 }
