@@ -5,6 +5,7 @@ Bu proje Arduino IDE tek dosya yaklaşımından PlatformIO yapısına taşındı
 ## Dosya yapısı
 - `src/main.cpp`: uygulama akışı (`setup`, `loop`)
 - `src/SensorIO.cpp` + `include/SensorIO.h`: analog okuma ve NTC sıcaklık hesapları
+- `src/SensorReader.cpp` + `include/SensorReader.h`: sensörlerden tek noktadan veri toplama
 - `src/NextionOutput.cpp` + `include/NextionOutput.h`: Nextion serial çıktı fonksiyonları
 - `include/SensorConfig.h`: pinler, katsayılar, sabitler
 - `platformio.ini`: kart ve kütüphane ayarları
