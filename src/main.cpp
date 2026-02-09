@@ -10,6 +10,18 @@ namespace {
 MAX6675 thermocouple(pins::THERMO_CLK, pins::THERMO_CS, pins::THERMO_DO);
 DHT dht(pins::DHT_PIN, DHT22);
 String coolantLevel;
+
+struct NextionNumericUpdate {
+  const __FlashStringHelper* key;
+  float value;
+  float multiplier;
+};
+
+void sendDashboardUpdates(const NextionNumericUpdate* updates, size_t count) {
+  for (size_t i = 0; i < count; ++i) {
+    sendNextionNumber(updates[i].key, updates[i].value, updates[i].multiplier);
+  }
+}
 }  // namespace
 
 void setup() {
@@ -49,24 +61,19 @@ void loop() {
   const float dhtHumidity = dht.readHumidity();
   const float batteryVoltage = readVoltage(pins::BATTERY_VOLTAGE) * VOLTAGE_DIVIDER_RATIO;
 
-  sendNextionNumber(F("n1.val="), otTemperature, 10.0F);
-  sendNextionNumber(F("n2.val="), opPressure, 100.0F);
-  sendNextionNumber(F("n3.val="), ritTemperature, 100.0F);
-  sendNextionNumber(F("n4.val="), rotTemperature, 10.0F);
-  sendNextionNumber(F("n5.val="), ectTemperature, 10.0F);
-  sendNextionNumber(F("n6.val="), chtTemperature, 10.0F);
-  sendNextionNumber(F("n7.val="), fpPressure, 100.0F);
+  const NextionNumericUpdate updates[] = {
+      {F("n1.val="), otTemperature, 10.0F},     {F("n2.val="), opPressure, 100.0F},
+      {F("n3.val="), ritTemperature, 100.0F},   {F("n4.val="), rotTemperature, 10.0F},
+      {F("n5.val="), ectTemperature, 10.0F},    {F("n6.val="), chtTemperature, 10.0F},
+      {F("n7.val="), fpPressure, 100.0F},       {F("n9.val="), batteryVoltage, 10.0F},
+      {F("n10.val="), egtTemperature, 10.0F},   {F("n11.val="), dhtTemperature, 100.0F},
+      {F("n12.val="), dhtHumidity, 100.0F},     {F("n13.val="), mapPressure, 100.0F},
+      {F("n14.val="), iatTemperature, 100.0F},  {F("n15.val="), t7Temperature, 100.0F},
+      {F("n16.val="), t8Temperature, 100.0F},
+  };
 
+  sendDashboardUpdates(updates, sizeof(updates) / sizeof(updates[0]));
   sendNextionText(F("t8.txt="), coolantLevel);
-
-  sendNextionNumber(F("n9.val="), batteryVoltage, 10.0F);
-  sendNextionNumber(F("n10.val="), egtTemperature, 10.0F);
-  sendNextionNumber(F("n11.val="), dhtTemperature, 100.0F);
-  sendNextionNumber(F("n12.val="), dhtHumidity, 100.0F);
-  sendNextionNumber(F("n13.val="), mapPressure, 100.0F);
-  sendNextionNumber(F("n14.val="), iatTemperature, 100.0F);
-  sendNextionNumber(F("n15.val="), t7Temperature, 100.0F);
-  sendNextionNumber(F("n16.val="), t8Temperature, 100.0F);
 
   delay(LOOP_DELAY_MS);
 }
