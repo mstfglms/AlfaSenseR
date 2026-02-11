@@ -2,7 +2,7 @@
 
 #include "NextionOutput.h"
 #include "SensorConfig.h"
-#include "SensorReader.h"
+#include "SensorReader.hpp"
 
 void setup() {
   Serial.begin(9600);

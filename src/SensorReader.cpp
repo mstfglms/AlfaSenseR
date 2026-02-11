@@ -1,7 +1,7 @@
-#include "SensorReader.h"
+#include "SensorReader.hpp"
 
 #include "SensorConfig.h"
-#include "SensorIO.h"
+#include "Thermistor.h"
 
 namespace {
 String detectCoolantLevel(float coolantVoltage) {
