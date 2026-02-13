@@ -9,10 +9,9 @@ void setup() {
 }
 
 void loop() {
-  const SensorSnapshot snapshot = readSensorSnapshot();
+  const SensorReadings readings = readSensorReadings();
 
-  sendDashboardValues(snapshot.dashboardValues);
-  sendNextionText(F("t8.txt="), snapshot.coolantLevel);
+  sendDisplayValues(readings.displayValues);
 
   delay(LOOP_DELAY_MS);
 }

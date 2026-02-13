@@ -8,7 +8,7 @@ The project has been converted from a single Arduino IDE sketch to a VS Code-fri
 
 ### New project structure
 - `src/main.cpp`: Main firmware logic
-- `include/SensorConfig.h`: Pin map and sensor coefficients
+- `include/SensorConfig.hpp`: Pin map and sensor coefficients
 - `platformio.ini`: Build/upload/monitor configuration for Arduino Mega 2560
 - `.vscode/extensions.json`: Recommended extensions for VS Code
 

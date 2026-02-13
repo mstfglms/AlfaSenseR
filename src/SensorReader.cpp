@@ -1,21 +1,25 @@
 #include "SensorReader.hpp"
 
-#include "SensorConfig.h"
+#include "SensorConfig.hpp"
 #include "Thermistor.h"
 
 namespace {
-String detectCoolantLevel(float coolantVoltage) {
+constexpr uint8_t COOLANT_LEVEL_NOK = 0;
+constexpr uint8_t COOLANT_LEVEL_OK = 1;
+constexpr uint8_t COOLANT_LEVEL_ERR = 2;
+
+uint8_t detectCoolantLevelCode(float coolantVoltage) {
   if (coolantVoltage < 1.0F) {
-    return "NOK";
+    return COOLANT_LEVEL_NOK;
   }
   if (coolantVoltage > 4.0F) {
-    return "OK";
+    return COOLANT_LEVEL_OK;
   }
-  return "ERR";
+  return COOLANT_LEVEL_ERR;
 }
 }  // namespace
 
-SensorSnapshot readSensorSnapshot() {
+SensorReadings readSensorReadings() {
   const float opVoltage = readVoltage(pins::OP);
   const float fpVoltage = readVoltage(pins::FP);
   const float mapVoltage = readVoltage(pins::MAP);
@@ -25,7 +29,7 @@ SensorSnapshot readSensorSnapshot() {
   const float fpPressure = 1.25F * (fpVoltage - 0.5F);
   const float mapPressure = 1.25F * (mapVoltage - 0.5F);
 
-  SensorSnapshot snapshot = {
+  SensorReadings readings = {
       {
           readTemperature(pins::OT, NPT_NTC),
           opPressure,
@@ -34,14 +38,14 @@ SensorSnapshot readSensorSnapshot() {
           readTemperature(pins::ECT, M12_NTC),
           readTemperature(pins::CHT, M10_NTC),
           fpPressure,
+          detectCoolantLevelCode(coolantVoltage),
           readVoltage(pins::BATTERY_VOLTAGE) * VOLTAGE_DIVIDER_RATIO,
           mapPressure,
           readTemperature(pins::IAT, M12_NTC),
           readTemperature(pins::T7, M12_NTC),
           readTemperature(pins::T8, M12_NTC),
       },
-      detectCoolantLevel(coolantVoltage),
   };
 
-  return snapshot;
+  return readings;
 }

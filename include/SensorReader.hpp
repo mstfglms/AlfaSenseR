@@ -4,9 +4,8 @@
 
 #include "NextionOutput.h"
 
-struct SensorSnapshot {
-  DashboardValues dashboardValues;
-  String coolantLevel;
+struct SensorReadings {
+  DisplayValues displayValues;
 };
 
-SensorSnapshot readSensorSnapshot();
+SensorReadings readSensorReadings();
