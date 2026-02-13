@@ -1,6 +1,6 @@
 #include "SensorReader.hpp"
 
-#include "SensorConfig.h"
+#include "SensorConfig.hpp"
 #include "Thermistor.h"
 
 namespace {
