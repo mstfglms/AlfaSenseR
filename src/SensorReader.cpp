@@ -4,14 +4,18 @@
 #include "Thermistor.h"
 
 namespace {
-String detectCoolantLevel(float coolantVoltage) {
+constexpr uint8_t COOLANT_LEVEL_NOK = 0;
+constexpr uint8_t COOLANT_LEVEL_OK = 1;
+constexpr uint8_t COOLANT_LEVEL_ERR = 2;
+
+uint8_t detectCoolantLevelCode(float coolantVoltage) {
   if (coolantVoltage < 1.0F) {
-    return "NOK";
+    return COOLANT_LEVEL_NOK;
   }
   if (coolantVoltage > 4.0F) {
-    return "OK";
+    return COOLANT_LEVEL_OK;
   }
-  return "ERR";
+  return COOLANT_LEVEL_ERR;
 }
 }  // namespace
 
@@ -40,7 +44,7 @@ SensorSnapshot readSensorSnapshot() {
           readTemperature(pins::T7, M12_NTC),
           readTemperature(pins::T8, M12_NTC),
       },
-      detectCoolantLevel(coolantVoltage),
+      detectCoolantLevelCode(coolantVoltage),
   };
 
   return snapshot;
