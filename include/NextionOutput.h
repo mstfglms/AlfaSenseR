@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-struct DashboardValues {
+struct DisplayValues {
   float otTemperature;
   float opPressure;
   float ritTemperature;
@@ -10,6 +10,7 @@ struct DashboardValues {
   float ectTemperature;
   float chtTemperature;
   float fpPressure;
+  uint8_t coolantLevelCode;
   float batteryVoltage;
   float mapPressure;
   float iatTemperature;
@@ -19,4 +20,4 @@ struct DashboardValues {
 
 void sendNextionNumber(const __FlashStringHelper* key, float value, float multiplier);
 void sendNextionText(const __FlashStringHelper* key, const String& value);
-void sendDashboardValues(const DashboardValues& values);
+void sendDisplayValues(const DisplayValues& values);

@@ -19,7 +19,7 @@ uint8_t detectCoolantLevelCode(float coolantVoltage) {
 }
 }  // namespace
 
-SensorSnapshot readSensorSnapshot() {
+SensorReadings readSensorReadings() {
   const float opVoltage = readVoltage(pins::OP);
   const float fpVoltage = readVoltage(pins::FP);
   const float mapVoltage = readVoltage(pins::MAP);
@@ -29,7 +29,7 @@ SensorSnapshot readSensorSnapshot() {
   const float fpPressure = 1.25F * (fpVoltage - 0.5F);
   const float mapPressure = 1.25F * (mapVoltage - 0.5F);
 
-  SensorSnapshot snapshot = {
+  SensorReadings readings = {
       {
           readTemperature(pins::OT, NPT_NTC),
           opPressure,
@@ -38,14 +38,14 @@ SensorSnapshot readSensorSnapshot() {
           readTemperature(pins::ECT, M12_NTC),
           readTemperature(pins::CHT, M10_NTC),
           fpPressure,
+          detectCoolantLevelCode(coolantVoltage),
           readVoltage(pins::BATTERY_VOLTAGE) * VOLTAGE_DIVIDER_RATIO,
           mapPressure,
           readTemperature(pins::IAT, M12_NTC),
           readTemperature(pins::T7, M12_NTC),
           readTemperature(pins::T8, M12_NTC),
       },
-      detectCoolantLevelCode(coolantVoltage),
   };
 
-  return snapshot;
+  return readings;
 }
