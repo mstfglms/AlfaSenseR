@@ -1,9 +1,6 @@
 #include "Thermistor.hpp"
+#include "SensorReader.hpp"
 
-float readVoltage(uint8_t pin) {
-  const int sensorValue = analogRead(pin);
-  return sensorValue * (5.0F / 1023.0F);
-}
 
 static float voltageToResistance(float voltage) {
   const float buffer = (5.0F / voltage) - 1.0F;

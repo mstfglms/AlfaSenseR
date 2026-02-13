@@ -8,4 +8,6 @@ struct SensorReadings {
   DisplayValues displayValues;
 };
 
+float readVoltage(uint8_t pin);
+
 SensorReadings readSensorReadings();
