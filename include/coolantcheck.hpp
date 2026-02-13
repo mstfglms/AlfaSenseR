@@ -7,3 +7,5 @@
 #define COOLANT_LEVEL_ERR 2
 
 uint8_t detectCoolantLevelCode(float coolantVoltage);
+
+uint8_t readCoolantLevel();

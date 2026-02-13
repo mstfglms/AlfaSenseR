@@ -9,9 +9,9 @@ void setup() {
 }
 
 void loop() {
-  const SensorReadings readings = readSensorReadings();
+  const SensorReadings finalValues = readSensorReadings();
 
-  sendDisplayValues(readings.displayValues);
+  sendDisplayValues(finalValues.displayValues);
 
   delay(LOOP_DELAY_MS);
 }

@@ -18,9 +18,10 @@ constexpr uint8_t T7 = A13;
 constexpr uint8_t T8 = A15;
 
 constexpr uint8_t BATTERY_VOLTAGE = A8;
-}  // namespace pins
+} 
 
 constexpr float VOLTAGE_DIVIDER_RATIO = 3.0715F;
+
 constexpr uint32_t LOOP_DELAY_MS = 250;
 
 struct SteinhartHart {
@@ -42,4 +43,17 @@ constexpr SteinhartHart SENSOR_COEFFICIENTS[SENSOR_TYPE_COUNT] = {
     {1.511129458e-3F, 2.497079116e-4F, -0.03967365606e-7F},
     {0.3293062200e-3F, 4.042042390e-4F, -6.802609499e-7F},
     {2.117408253e-3F, 1.233985992e-4F, 10.94780921e-7F},
+};
+
+enum PressureType : uint8_t {
+  OP_PRESSURE = 0,
+  FP_PRESSURE,
+  MAP_PRESSURE,
+  PRESSURE_TYPE_COUNT
+};
+
+constexpr float PRESSURE_MULTIPLIERS[PRESSURE_TYPE_COUNT] = {
+    2.50F,  // OP_PRESSURE
+    1.25F,  // FP_PRESSURE
+    1.25F   // MAP_PRESSURE
 };

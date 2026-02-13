@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include "SensorConfig.hpp"
 
 struct PressureReadings {
   float opPressure;
@@ -9,3 +10,5 @@ struct PressureReadings {
 };
 
 PressureReadings readPressureValues();
+
+float readPressure(uint8_t pin, PressureType pressureType);

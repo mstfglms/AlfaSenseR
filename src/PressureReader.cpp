@@ -7,15 +7,20 @@ PressureReadings readPressureValues() {
   const float fpVoltage = readVoltage(pins::FP);
   const float mapVoltage = readVoltage(pins::MAP);
 
-  const float opPressure = 2.50F * (opVoltage - 0.5F);
-  const float fpPressure = 1.25F * (fpVoltage - 0.5F);
-  const float mapPressure = 1.25F * (mapVoltage - 0.5F);
+  const float opPressure = PRESSURE_MULTIPLIERS[OP_PRESSURE] * (opVoltage - 0.5F);
+  const float fpPressure = PRESSURE_MULTIPLIERS[FP_PRESSURE] * (fpVoltage - 0.5F);
+  const float mapPressure = PRESSURE_MULTIPLIERS[MAP_PRESSURE] * (mapVoltage - 0.5F);
 
-  PressureReadings readings = {
+  PressureReadings pressureReadings = {
     opPressure,
     fpPressure,
     mapPressure
   };
 
-  return readings;
+  return pressureReadings;
+}
+
+float readPressure(uint8_t pin, PressureType pressureType) {
+  const float voltage = readVoltage(pin);
+  return PRESSURE_MULTIPLIERS[pressureType] * (voltage - 0.5F);
 }

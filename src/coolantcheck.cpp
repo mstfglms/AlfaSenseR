@@ -12,3 +12,8 @@ uint8_t detectCoolantLevelCode(float coolantVoltage) {
   }
   return COOLANT_LEVEL_ERR;
 }
+
+uint8_t readCoolantLevel() {
+  const float coolantVoltage = readVoltage(pins::P4);
+  return detectCoolantLevelCode(coolantVoltage);
+}

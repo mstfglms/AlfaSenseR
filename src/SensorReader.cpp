@@ -10,27 +10,23 @@ float readVoltage(uint8_t pin) {
 }
 
 SensorReadings readSensorReadings() {
-  const float coolantVoltage = readVoltage(pins::P4);
-
-  const PressureReadings pressures = readPressureValues();
-
-  SensorReadings readings = {
+  SensorReadings sensorData = {
       {
           readTemperature(pins::OT, NPT_NTC),
-          pressures.opPressure,
+          readPressure(pins::OP, OP_PRESSURE),
           readTemperature(pins::RIT, M12_NTC),
           readTemperature(pins::ROT, M12_NTC),
           readTemperature(pins::ECT, M12_NTC),
           readTemperature(pins::CHT, M10_NTC),
-          pressures.fpPressure,
-          detectCoolantLevelCode(coolantVoltage),
+          readPressure(pins::FP, FP_PRESSURE),
+          readCoolantLevel(),
           readVoltage(pins::BATTERY_VOLTAGE) * VOLTAGE_DIVIDER_RATIO,
-          pressures.mapPressure,
+          readPressure(pins::MAP, MAP_PRESSURE),
           readTemperature(pins::IAT, M12_NTC),
           readTemperature(pins::T7, M12_NTC),
           readTemperature(pins::T8, M12_NTC),
       },
   };
 
-  return readings;
+  return sensorData;
 }
