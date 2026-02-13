@@ -19,7 +19,7 @@ float calculateTemperature(float resistance, const SteinhartHart& coefficients) 
 
 float readTemperature(uint8_t pin, SensorType sensorType) {
   const float voltage = readVoltage(pin);
-  if (voltage < 0.1F) return 0.0F;
+  if (voltage < 0.1F || voltage > 4.9F) return 0.0F;
 
   const float resistance = voltageToResistance(voltage);
   return calculateTemperature(resistance, SENSOR_COEFFICIENTS[sensorType]);
