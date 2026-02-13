@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "NextionOutput.h"
-#include "SensorConfig.h"
+#include "SensorConfig.hpp"
 #include "SensorReader.hpp"
 
 void setup() {
