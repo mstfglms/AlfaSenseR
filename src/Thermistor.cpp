@@ -1,4 +1,4 @@
-#include "Thermistor.h"
+#include "Thermistor.hpp"
 
 float readVoltage(uint8_t pin) {
   const int sensorValue = analogRead(pin);

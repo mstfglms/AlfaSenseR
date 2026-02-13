@@ -2,16 +2,10 @@
 
 #include <Arduino.h>
 
-#include "NextionOutput.h"
+#include "NextionOutput.hpp"
 
-<<<<<<< codex/review-the-code-txkgdp
 struct SensorReadings {
   DisplayValues displayValues;
-=======
-struct SensorSnapshot {
-  DashboardValues dashboardValues;
-  uint8_t coolantLevelCode;
->>>>>>> main
 };
 
 SensorReadings readSensorReadings();

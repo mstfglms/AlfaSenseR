@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "NextionOutput.h"
+#include "NextionOutput.hpp"
 #include "SensorConfig.hpp"
 #include "SensorReader.hpp"
 

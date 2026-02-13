@@ -1,7 +1,7 @@
 #include "SensorReader.hpp"
 
 #include "SensorConfig.hpp"
-#include "Thermistor.h"
+#include "Thermistor.hpp"
 
 namespace {
 constexpr uint8_t COOLANT_LEVEL_NOK = 0;

@@ -1,4 +1,4 @@
-#include "NextionOutput.h"
+#include "NextionOutput.hpp"
 
 namespace {
 struct NextionNumericUpdate {
