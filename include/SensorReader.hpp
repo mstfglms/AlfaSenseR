@@ -6,7 +6,7 @@
 
 struct SensorSnapshot {
   DashboardValues dashboardValues;
-  String coolantLevel;
+  uint8_t coolantLevelCode;
 };
 
 SensorSnapshot readSensorSnapshot();

@@ -12,7 +12,7 @@ void loop() {
   const SensorSnapshot snapshot = readSensorSnapshot();
 
   sendDashboardValues(snapshot.dashboardValues);
-  sendNextionText(F("t8.txt="), snapshot.coolantLevel);
+  sendNextionNumber(F("n8.val="), snapshot.coolantLevelCode, 1.0F);
 
   delay(LOOP_DELAY_MS);
 }
